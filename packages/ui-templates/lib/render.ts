@@ -126,7 +126,7 @@ export const RenderPlugin = () => {
           .match(/<body[^>]*>([\s\S]*)<\/body>/)?.[0]
           .replace(/(?<=<\/|<)body/g, 'div')
           .replace(/messages\./g, '')
-          .replace(/<script[^>]*>([\s\S]*?)<\/script>/g, '')
+          .replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, '')
           .replace(/<a href="(\/[^"]*)"([^>]*)>([\s\S]*)<\/a>/g, '<NuxtLink to="$1"$2>\n$3\n</NuxtLink>')
 
           .replace(/<([^>]+) ([a-z]+)="([^"]*)(\{\{\s*(\w+)\s*\}\})([^"]*)"([^>]*)>/g, '<$1 :$2="`$3${$5}$6`"$7>')
@@ -147,7 +147,7 @@ export const RenderPlugin = () => {
         }).replace(/@media[^{]*\{\}/g, '')
 
         const inlineScripts: string[] = []
-        for (const [_, i] of html.matchAll(/<script>([\s\S]*?)<\/script>/g)) {
+        for (const [_, i] of html.matchAll(/<script>([\s\S]*?)<\/script>/gi)) {
           if (i && !i.includes('const t=document.createElement("link")')) {
             inlineScripts.push(i)
           }
