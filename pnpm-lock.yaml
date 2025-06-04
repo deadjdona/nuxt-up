@@ -206,8 +206,8 @@ importers:
         specifier: 1.5.0
         version: 1.5.0
       srvx:
-        specifier: 0.7.3
-        version: 0.7.3
+        specifier: 0.7.5
+        version: 0.7.5
       std-env:
         specifier: 3.9.0
         version: 3.9.0
@@ -7569,8 +7569,8 @@ packages:
     resolution: {integrity: sha512-qxQJTx2ryR0Dw0ITYyekNQWpz6f8dGd7vffGNflQQ3Iqj9NJ6qiZ7ELpZsJ/QBhIVAiDfXdag3+Gp8RvWa62AA==}
     engines: {node: '>=12'}
 
-  srvx@0.7.3:
-    resolution: {integrity: sha512-oEV2fS42a7KAeZUY3A59/HIWFm53EVVm2kXXxsWw15LPCcyQNfcnzqQJKyO8UGBWFtyIn1+9efhjr65xEmmytw==}
+  srvx@0.7.5:
+    resolution: {integrity: sha512-wAQo9uaiOpxX20V7OSNFgKjKHHIQqhsK0sxBGoxID3aIiaiQFRIlGm0bACKvit/iyhEqdWQfEy55R/j/jrqlZg==}
     engines: {node: '>=20.16.0'}
 
   stable-hash@0.0.5:
@@ -15892,7 +15892,7 @@ snapshots:
 
   split-on-first@3.0.0: {}
 
-  srvx@0.7.3:
+  srvx@0.7.5:
     dependencies:
       cookie-es: 2.0.0
 
