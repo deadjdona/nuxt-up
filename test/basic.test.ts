@@ -1289,7 +1289,16 @@ describe('composables', () => {
     // TODO: work around interesting Vue bug where async components are loaded in a different order on first import
     await $fetch<string>('/use-id')
 
-    const sanitiseHTML = (html: string) => html.replace(/ data-[^= ]+="[^"]+"/g, '').replace(/<!--[[\]]-->/, '')
+    const sanitiseHTML = (html: string) => {
+      let previous;
+      do {
+        previous = html;
+        html = html
+          .replace(/ data-[^= ]+="[^"]+"/g, '')
+          .replace(/<!--.*?-->/g, '');
+      } while (html !== previous);
+      return html;
+    }
 
     const serverHTML = await $fetch<string>('/use-id').then(html => sanitiseHTML(html.match(/<form.*<\/form>/)![0]))
     const ids = serverHTML.match(/id="[^"]*"/g)?.map(id => id.replace(/id="([^"]*)"/, '$1')) as string[]
