@@ -1295,7 +1295,7 @@ describe('composables', () => {
         previous = html;
         html = html
           .replace(/ data-[^= ]+="[^"]+"/g, '')
-          .replace(/<!--.*?-->/g, '');
+          .replace(/<!--[\s\S]*?-->/g, '');
       } while (html !== previous);
       return html;
     }
