@@ -5,12 +5,6 @@ import { isTest } from 'std-env'
 import { defineResolvers } from '../utils/definition'
 
 export default defineResolvers({
-  /**
-   * Configuration that will be passed directly to Vite.
-   *
-   * @see [Vite configuration docs](https://vite.dev/config) for more information.
-   * Please note that not all vite options are supported in Nuxt.
-   */
   vite: {
     root: {
       $resolve: async (val, get) => typeof val === 'string' ? val : (await get('srcDir')),
@@ -35,12 +29,12 @@ export default defineResolvers({
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
     },
     publicDir: {
-      // @ts-expect-error this is missing from our `vite` types deliberately, so users do not configure it
       $resolve: (val) => {
         if (val) {
           consola.warn('Directly configuring the `vite.publicDir` option is not supported. Instead, set `dir.public`. You can read more in `https://nuxt.com/docs/api/nuxt-config#public`.')
         }
-        return false
+        // this is missing from our `vite` types deliberately, so users do not configure it
+        return false as never
       },
     },
     vue: {
