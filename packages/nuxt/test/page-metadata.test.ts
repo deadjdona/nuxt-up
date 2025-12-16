@@ -4,9 +4,9 @@ import { compileScript, parse } from '@vue/compiler-sfc'
 import { klona } from 'klona'
 import { parse as toAst } from 'acorn'
 
-import { PageMetaPlugin } from '../src/pages/plugins/page-meta'
-import { getRouteMeta, normalizeRoutes } from '../src/pages/utils'
-import type { NuxtPage } from '../schema'
+import { PageMetaPlugin } from '../src/pages/plugins/page-meta.ts'
+import { getRouteMeta, normalizeRoutes } from '../src/pages/utils.ts'
+import type { NuxtPage } from '../schema.ts'
 
 const filePath = '/app/pages/index.vue'
 
@@ -135,57 +135,33 @@ definePageMeta({ name: 'bar' })
       }
     `)
   })
-  it('should extract metadata with TS satisfies', () => {
-    const meta = getRouteMeta(`
-    <script setup lang="ts">
-    type PageName = 'name-from-page-meta' | 'whatever';
 
-    definePageMeta({
-      name: 'name-from-page-meta' satisfies PageName,
-    });
-    </script>
-    `, filePath)
-
-    expect(meta).toMatchInlineSnapshot(`
-      {
-        "name": "name-from-page-meta",
-      }
-    `)
-  })
-
-  it('should extract metadata with TS as expression', () => {
+  it('should extract metadata containing TS expressions', () => {
     const meta = getRouteMeta(`
     <script setup lang="ts">
     type PageName = 'name-from-page-meta' | 'whatever';
 
     definePageMeta({
       name: 'name-from-page-meta' as PageName,
-    });
+      path: ('/some-custom-path') as const,
+      props: <{ foo: string }>{
+        foo: 'bar' satisfies string,
+      },
+    } as const);
     </script>
     `, filePath)
 
     expect(meta).toMatchInlineSnapshot(`
       {
         "name": "name-from-page-meta",
+        "path": "/some-custom-path",
+        "props": {
+          "foo": "bar",
+        },
       }
     `)
   })
 
-  it('should extract metadata with TS ParenthesisExpression with as', () => {
-    const meta = getRouteMeta(`
-    <script setup lang="ts">
-    definePageMeta({
-      name: ('name-from-page-meta') as const,
-    });
-    </script>
-    `, filePath)
-
-    expect(meta).toMatchInlineSnapshot(`
-      {
-        "name": "name-from-page-meta",
-      }
-    `)
-  })
   it('should not extract non-serialisable meta', () => {
     const meta = getRouteMeta(`
     <script setup>
@@ -486,7 +462,7 @@ definePageMeta({
   it('should extract user imports', () => {
     const sfc = `
 <script setup lang="ts">
-import { validateIdParam } from './utils'
+import { validateIdParam } from './utils.ts'
 
 definePageMeta({
   validate: validateIdParam,
@@ -496,7 +472,7 @@ definePageMeta({
       `
     const res = compileScript(parse(sfc).descriptor, { id: 'component.vue' })
     expect(transformPlugin.transform(res.content, 'component.vue?macro=true')?.code).toMatchInlineSnapshot(`
-      "import { validateIdParam } from './utils'
+      "import { validateIdParam } from './utils.ts'
 
       const __nuxt_page_meta = {
         validate: validateIdParam,
@@ -663,7 +639,7 @@ definePageMeta({
   it('should work when keeping names = true', () => {
     const sfc = `
 <script setup lang="ts">
-import { foo } from './utils'
+import { foo } from './utils.ts'
 
 const checkNum = (value) => {
   return !isNaN(Number(foo(value)))
@@ -682,7 +658,7 @@ definePageMeta({
       `
     const compiled = compileScript(parse(sfc).descriptor, { id: 'component.vue' })
     expect(transformPlugin.transform(compiled.content, 'component.vue?macro=true')?.code).toMatchInlineSnapshot(`
-      "import { foo } from './utils'
+      "import { foo } from './utils.ts'
       const checkNum = (value) => {
         return !isNaN(Number(foo(value)))
       }

@@ -4,6 +4,8 @@
 
 <script setup>
 import { defineAsyncComponent } from 'vue'
+// eslint-disable-next-line vue/prefer-import-from-vue
+import { escapeHtml } from '@vue/shared'
 
 const props = defineProps({
   error: Object,
@@ -13,7 +15,7 @@ const props = defineProps({
 const _error = props.error
 
 // TODO: extract to a separate utility
-const stacktrace = _error.stack
+const stacktrace = import.meta.dev && _error.stack
   ? _error.stack
       .split('\n')
       .splice(1)
@@ -28,7 +30,7 @@ const stacktrace = _error.stack
           line.includes('internal') ||
           line.includes('new Promise'),
         }
-      }).map(i => `<span class="stack${i.internal ? ' internal' : ''}">${i.text}</span>`).join('\n')
+      }).map(i => `<span class="stack${i.internal ? ' internal' : ''}">${escapeHtml(i.text)}</span>`).join('\n')
   : ''
 
 // Error page props
@@ -41,9 +43,7 @@ const stack = import.meta.dev && !is404 ? _error.description || `<pre>${stacktra
 
 // TODO: Investigate side-effect issue with imports
 const _Error404 = defineAsyncComponent(() => import('./error-404.vue'))
-const _Error = import.meta.dev
-  ? defineAsyncComponent(() => import('./error-dev.vue'))
-  : defineAsyncComponent(() => import('./error-500.vue'))
+const _Error = defineAsyncComponent(() => import('./error-500.vue'))
 
 const ErrorTemplate = is404 ? _Error404 : _Error
 </script>

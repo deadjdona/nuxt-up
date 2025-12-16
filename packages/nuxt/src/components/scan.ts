@@ -5,14 +5,14 @@ import { kebabCase, pascalCase, splitByCase } from 'scule'
 import { isIgnored, useNuxt } from '@nuxt/kit'
 import { withTrailingSlash } from 'ufo'
 
-import { QUOTE_RE, resolveComponentNameSegments } from '../core/utils'
-import { logger, resolveToAlias } from '../utils'
+import { QUOTE_RE, resolveComponentNameSegments } from '../core/utils/index.ts'
+import { logger, resolveToAlias } from '../utils.ts'
 import type { Component, ComponentsDir } from 'nuxt/schema'
 
 const ISLAND_RE = /\.island(?:\.global)?$/
 const GLOBAL_RE = /\.global(?:\.island)?$/
-const COMPONENT_MODE_RE = /(?<=\.)(client|server)(\.global|\.island)*$/
-const MODE_REPLACEMENT_RE = /(\.(client|server))?(\.global|\.island)*$/
+const COMPONENT_MODE_RE = /(?<=\.)(client|server)(?:\.global|\.island)*$/
+const MODE_REPLACEMENT_RE = /(?:\.(?:client|server))?(?:\.global|\.island)*$/
 /**
  * Scan the components inside different components folders
  * and return a unique list of components
@@ -31,9 +31,6 @@ export async function scanComponents (dirs: ComponentsDir[], srcDir: string): Pr
   const scannedPaths: string[] = []
 
   for (const dir of dirs) {
-    if (dir.enabled === false) {
-      continue
-    }
     // A map from resolved path to component name (used for making duplicate warning message)
     const resolvedNames = new Map<string, string>()
 
@@ -124,6 +121,7 @@ export async function scanComponents (dirs: ComponentsDir[], srcDir: string): Pr
         preload: Boolean(dir.preload),
         // specific to the file
         filePath,
+        declarationPath: filePath,
         pascalName,
         kebabName,
         chunkName,
