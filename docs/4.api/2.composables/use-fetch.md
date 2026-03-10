@@ -25,8 +25,8 @@ const { data, status, error, refresh, clear } = await useFetch('/api/modules', {
 </script>
 ```
 
-::warning
-If you're using a custom useFetch wrapper, do not await it in the composable, as that can cause unexpected behavior. Please follow [this recipe](/docs/4.x/guide/recipes/custom-usefetch#custom-usefetchuseasyncdata) for more information on how to make a custom async data fetcher.
+::warning{to="/docs/4.x/guide/recipes/custom-usefetch#custom-usefetchuseasyncdata"}
+If you're using a custom `useFetch` wrapper, do not await it in the composable as that can cause unexpected behavior. See recipe for custom async data fetcher.
 ::
 
 ::note
@@ -161,6 +161,7 @@ type AsyncDataRequestContext = {
 
 type AsyncData<DataT, ErrorT> = {
   data: Ref<DataT | undefined>
+  pending: Ref<boolean>
   refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
   execute: (opts?: AsyncDataExecuteOptions) => Promise<void>
   clear: () => void
@@ -229,6 +230,7 @@ This only caches data when `experimental.payloadExtraction` in `nuxt.config` is 
 | `execute` | `(opts?: AsyncDataExecuteOptions) => Promise<void>` | Alias for `refresh`.                                                                                                                                              |
 | `error`   | `Ref<ErrorT \| undefined>`                          | Error object if the data fetching failed.                                                                                                                         |
 | `status`  | `Ref<'idle' \| 'pending' \| 'success' \| 'error'>`  | Status of the data request. See below for possible values.                                                                                                        |
+| `pending` | `Ref<boolean>`                                      | Boolean flag indicating whether the current request is in progress.                                                                                                |
 | `clear`   | `() => void`                                        | Resets `data` to `undefined` (or the value of `options.default()` if provided), `error` to `undefined`, set `status` to `idle`, and cancels any pending requests. |
 
 ### Status values
